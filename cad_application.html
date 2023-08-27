@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    canvas {
+      background-color: #f2f2f2;
+    }
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+      float: left;
+    }
+    .main {
+      padding: 20px;
+      box-sizing: border-box;
+      float: left;
+    }
+    .component {
+      margin-bottom: 10px;
+    }
+    .component input {
+      width: 50px;
+      padding: 5px;
+      box-sizing: border-box;
+      margin-left: 10px;
+    }
+    .component label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Components</h2>
+    <div class="component">
+      <label for="cabinet-width">Cabinet Width:</label>
+      <input id="cabinet-width" type="number" min="1">
+    </div>
+    <div class="component">
+      <label for="cabinet-height">Cabinet Height:</label>
+      <input id="cabinet-height" type="number" min="1">
+    </div>
+    <div class="component">
+      <label for="cabinet-depth">Cabinet Depth:</label>
+      <input id="cabinet-depth" type="number" min="1">
+    </div>
+    <div class="component">
+      <label for="num-drawers">Number of Drawers:</label>
+      <input id="num-drawers" type="number" min="0">
+    </div>
+    <button id="add-cabinet">Add Cabinet</button>
+  </div>
+
+  <div class="main">
+    <canvas id="canvas"></canvas>
+  </div>
+  
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let cabinets = [];
+
+    function updateCanvas() {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw cabinets
+      cabinets.forEach(cabinet => {
+        ctx.fillStyle = '#ddd';
+        ctx.fillRect(cabinet.x, cabinet.y, cabinet.width, cabinet.height);
+
+        // Draw drawers
+        ctx.fillStyle = '#bbb';
+        const drawerHeight = cabinet.height / (cabinet.numDrawers + 1);
+        for (let i = 1; i <= cabinet.numDrawers; i++) {
+          ctx.fillRect(cabinet.x, cabinet.y + i * drawerHeight, cabinet.width, drawerHeight);
+        }
+      });
+    }
+
+    function addCabinet() {
+      const cabinetWidth = parseInt(document.getElementById('cabinet-width').value);
+      const cabinetHeight = parseInt(document.getElementById('cabinet-height').value);
+      const cabinetDepth = parseInt(document.getElementById('cabinet-depth').value);
+      const numDrawers = parseInt(document.getElementById('num-drawers').value);
+
+      const cabinet = {
+        width: cabinetWidth,
+        height: cabinetHeight,
+        depth: cabinetDepth,
+        numDrawers: numDrawers,
+        x: Math.random() * (canvas.width - cabinetWidth),
+        y: Math.random() * (canvas.height - cabinetHeight)
+      };
+
+      cabinets.push(cabinet);
+      updateCanvas();
+    }
+
+    document.getElementById('add-cabinet').addEventListener('click', addCabinet);
+  </script>
+</body>
+</html>
